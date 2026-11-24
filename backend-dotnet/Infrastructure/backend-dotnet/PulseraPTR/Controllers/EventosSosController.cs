@@ -1,4 +1,5 @@
 using Application.Interfaces;
+using Domain.Enums;
 using Microsoft.AspNetCore.Mvc;
 
 namespace PulseraPTR.Controllers;
@@ -14,13 +15,14 @@ public class EventosSosController : Controller
         _pacientes = pacientes;
     }
 
-    public async Task<IActionResult> Index(int? pacienteId, bool? atendido, CancellationToken cancellationToken)
+    public async Task<IActionResult> Index(int? pacienteId, bool? atendido, TipoEventoEmergencia? tipo, CancellationToken cancellationToken)
     {
         ViewBag.Pacientes = await _pacientes.ListarAsync(incluirInactivos: false, cancellationToken);
         ViewBag.PacienteId = pacienteId;
         ViewBag.Atendido = atendido;
+        ViewBag.Tipo = tipo;
 
-        var lista = await _eventos.ListarAsync(pacienteId, atendido, cancellationToken);
+        var lista = await _eventos.ListarAsync(pacienteId, atendido, tipo, cancellationToken);
         return View(lista);
     }
 

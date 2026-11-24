@@ -34,6 +34,7 @@ import androidx.health.connect.client.records.HeartRateVariabilityRmssdRecord
 import androidx.health.connect.client.records.SleepSessionRecord
 import androidx.health.connect.client.records.StepsRecord
 import androidx.health.connect.client.records.TotalCaloriesBurnedRecord
+import com.example.reloj.fall.SeccionDeteccionCaidas
 import com.pulseraptr.network.NetworkingConfig
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -406,6 +407,10 @@ fun PantallaPrincipal(
                     Text("Restablecer")
                 }
             }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            SeccionDeteccionCaidas(historial = historial)
 
             Spacer(modifier = Modifier.height(12.dp))
 

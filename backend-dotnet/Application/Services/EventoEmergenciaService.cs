@@ -43,12 +43,14 @@ public class EventoEmergenciaService : IEventoEmergenciaService
         var paciente = await _pacientes.GetByIdAsync(dto.PacienteId, cancellationToken)
             ?? throw new NotFoundException($"No se encontró el paciente {dto.PacienteId}.");
 
-        var tipo = dto.TipoEvento;
-        if (tipo != TipoEventoEmergencia.SOS)
-            tipo = TipoEventoEmergencia.SOS;
+        var tipo = dto.TipoEvento == TipoEventoEmergencia.CAIDA
+            ? TipoEventoEmergencia.CAIDA
+            : TipoEventoEmergencia.SOS;
+        var esCaida = tipo == TipoEventoEmergencia.CAIDA;
 
         var estado = EstadoClinico.CRITICO;
-        var mensaje = string.IsNullOrWhiteSpace(dto.Mensaje) ? "Emergencia SOS" : dto.Mensaje.Trim();
+        var mensajePorDefecto = esCaida ? "Caída detectada" : "Emergencia SOS";
+        var mensaje = string.IsNullOrWhiteSpace(dto.Mensaje) ? mensajePorDefecto : dto.Mensaje.Trim();
 
         var evento = new EventoEmergencia
         {
@@ -66,7 +68,7 @@ public class EventoEmergenciaService : IEventoEmergenciaService
         {
             PacienteId = dto.PacienteId,
             FechaHora = dto.FechaHora,
-            TipoAlerta = TipoAlerta.SosManual,
+            TipoAlerta = esCaida ? TipoAlerta.CaidaDetectada : TipoAlerta.SosManual,
             Estado = estado,
             Mensaje = mensaje,
             Leida = false
@@ -88,7 +90,7 @@ public class EventoEmergenciaService : IEventoEmergenciaService
                 paciente.Id,
                 paciente.Nombre,
                 paciente.ContactoEmergencia,
-                "Emergencia SOS — PulseraPTR",
+                esCaida ? "Caída detectada — PulseraPTR" : "Emergencia SOS — PulseraPTR",
                 $"{paciente.Nombre}: {mensaje}",
                 cancellationToken);
         }
@@ -96,9 +98,13 @@ public class EventoEmergenciaService : IEventoEmergenciaService
         return dtoEvento;
     }
 
-    public async Task<IReadOnlyList<EventoEmergenciaDto>> ListarAsync(int? pacienteId, bool? atendido, CancellationToken cancellationToken = default)
+    public async Task<IReadOnlyList<EventoEmergenciaDto>> ListarAsync(
+        int? pacienteId,
+        bool? atendido,
+        TipoEventoEmergencia? tipo = null,
+        CancellationToken cancellationToken = default)
     {
-        var items = await _eventos.BuscarAsync(pacienteId, atendido, TipoEventoEmergencia.SOS, cancellationToken);
+        var items = await _eventos.BuscarAsync(pacienteId, atendido, tipo, cancellationToken);
         return items.OrderByDescending(e => e.FechaHora).Select(e => e.ToDto()).ToList();
     }
 

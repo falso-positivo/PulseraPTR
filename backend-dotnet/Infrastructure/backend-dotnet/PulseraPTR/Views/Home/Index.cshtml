@@ -50,7 +50,7 @@
                     </div>
                     <div>
                         <div class="kpi-number">@Model.CantidadEventosSOSPendientes</div>
-                        <div class="kpi-label">SOS pendientes</div>
+                        <div class="kpi-label">Emergencias pendientes</div>
                     </div>
                 </div>
             </div>
@@ -237,14 +237,14 @@
     </div>
 </div>
 
-<!-- Últimos SOS -->
+<!-- Últimos eventos de emergencia (SOS + caídas) -->
 @if (Model.UltimosEventosSos.Any())
 {
     <div class="card shadow-sm">
         <div class="card-header bg-white border-0 pt-3 d-flex justify-content-between align-items-center">
             <span class="fw-semibold">
                 <i class="bi bi-telephone-fill text-danger me-1"></i>
-                Eventos SOS recientes
+                Emergencias recientes (SOS / caídas)
             </span>
             <a asp-controller="EventosSos" asp-action="Index" class="btn btn-sm btn-outline-danger">Ver todos</a>
         </div>
@@ -255,6 +255,7 @@
                     <div class="list-group-item d-flex justify-content-between align-items-center px-0 border-start-0 border-end-0">
                         <div class="d-flex align-items-center gap-2">
                             <span class="badge @(e.Atendido ? "bg-success" : "bg-danger")">@(e.Atendido ? "Atendido" : "Pendiente")</span>
+                            <partial name="_TipoEventoBadge" model="e.TipoEvento" />
                             <div>
                                 <span class="fw-medium small">@e.PacienteNombre</span>
                                 <span class="text-muted small ms-2">@e.Mensaje</span>

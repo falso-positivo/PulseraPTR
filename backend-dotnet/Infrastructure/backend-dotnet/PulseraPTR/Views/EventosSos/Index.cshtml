@@ -1,22 +1,23 @@
 @model IReadOnlyList<EventoEmergenciaDto>
 @{
-    ViewData["Title"] = "Eventos SOS";
+    ViewData["Title"] = "Eventos de emergencia";
     var pacientes = ViewBag.Pacientes as IReadOnlyList<PacienteDto> ?? Array.Empty<PacienteDto>();
     int? filtroPaciente = ViewBag.PacienteId as int?;
     bool? filtroAtendido = ViewBag.Atendido as bool?;
+    TipoEventoEmergencia? filtroTipo = ViewBag.Tipo as TipoEventoEmergencia?;
 }
 
 <div class="d-flex align-items-center justify-content-between mb-3">
     <div>
-        <h1 class="h3 mb-0">Eventos SOS</h1>
-        <p class="text-muted mb-0">Emergencias manuales registradas desde la pulsera</p>
+        <h1 class="h3 mb-0">Eventos de emergencia</h1>
+        <p class="text-muted mb-0">SOS manuales y caídas detectadas automáticamente desde la pulsera</p>
     </div>
     <a class="btn btn-outline-secondary" asp-action="Index">Limpiar filtros</a>
 </div>
 
 <form class="card shadow-sm mb-3" method="get">
     <div class="card-body row g-3 align-items-end">
-        <div class="col-md-4">
+        <div class="col-md-3">
             <label class="form-label">Paciente</label>
             <select class="form-select" name="pacienteId">
                 <option value="">Todos</option>
@@ -33,7 +34,25 @@
                 }
             </select>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-3">
+            <label class="form-label">Tipo</label>
+            <select class="form-select" name="tipo">
+                <option value="">Todos</option>
+                @foreach (var t in Enum.GetValues<TipoEventoEmergencia>())
+                {
+                    var etiqueta = t == TipoEventoEmergencia.CAIDA ? "Caída" : "SOS";
+                    if (filtroTipo == t)
+                    {
+                        <option value="@t" selected>@etiqueta</option>
+                    }
+                    else
+                    {
+                        <option value="@t">@etiqueta</option>
+                    }
+                }
+            </select>
+        </div>
+        <div class="col-md-3">
             <label class="form-label">Atendido</label>
             <select class="form-select" name="atendido">
                 <option value="">Todos</option>
@@ -68,6 +87,7 @@
             <thead class="table-light">
                 <tr>
                     <th>Fecha</th>
+                    <th>Tipo</th>
                     <th>Paciente</th>
                     <th>Estado</th>
                     <th>Atendido</th>
@@ -80,6 +100,7 @@
             {
                 <tr>
                     <td class="text-nowrap">@e.FechaHora.ToString("g")</td>
+                    <td><partial name="_TipoEventoBadge" model="e.TipoEvento" /></td>
                     <td>@e.PacienteNombre</td>
                     <td><span class="badge badge-estado-@e.Estado">@e.Estado</span></td>
                     <td>@(e.Atendido ? "Sí" : "No")</td>

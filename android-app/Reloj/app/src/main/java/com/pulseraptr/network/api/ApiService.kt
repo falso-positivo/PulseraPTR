@@ -14,4 +14,7 @@ interface ApiService {
 
     @POST("api/eventos/sos")
     suspend fun postEventoSos(@Body body: EventoSosRequest): Response<ResponseBody>
+
+    @POST("api/eventos/caida")
+    suspend fun postEventoCaida(@Body body: EventoSosRequest): Response<ResponseBody>
 }

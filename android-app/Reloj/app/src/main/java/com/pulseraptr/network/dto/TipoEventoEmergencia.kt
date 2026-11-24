@@ -1,5 +1,8 @@
 package com.pulseraptr.network.dto
 
 enum class TipoEventoEmergencia {
-    SOS
+    SOS,
+
+    /** Caída detectada automáticamente por el acelerómetro. */
+    CAIDA
 }

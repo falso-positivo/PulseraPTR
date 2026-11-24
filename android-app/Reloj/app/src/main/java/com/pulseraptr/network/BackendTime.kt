@@ -15,4 +15,7 @@ object BackendTime {
     }
 
     fun nowIsoLocal(): String = formatter.get().format(Date())
+
+    /** Formatea un instante (epoch millis) con el mismo formato que [nowIsoLocal]. */
+    fun isoLocal(epochMillis: Long): String = formatter.get().format(Date(epochMillis))
 }

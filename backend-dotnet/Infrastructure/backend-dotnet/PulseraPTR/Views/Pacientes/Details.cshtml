@@ -183,12 +183,13 @@
     </div>
     <div class="col-lg-6">
         <div class="card shadow-sm h-100">
-            <div class="card-header bg-white fw-semibold">Eventos SOS (@Model.EventosSos.Count)</div>
+            <div class="card-header bg-white fw-semibold">Eventos de emergencia (@Model.EventosSos.Count)</div>
             <div class="table-responsive">
                 <table class="table table-sm mb-0">
                     <thead class="table-light">
                         <tr>
                             <th>Fecha</th>
+                            <th>Tipo</th>
                             <th>Estado</th>
                             <th>Atendido</th>
                             <th>Mensaje</th>
@@ -199,6 +200,7 @@
                     {
                         <tr>
                             <td class="text-nowrap">@e.FechaHora.ToString("g")</td>
+                            <td><partial name="_TipoEventoBadge" model="e.TipoEvento" /></td>
                             <td><span class="badge badge-estado-@e.Estado">@e.Estado</span></td>
                             <td>@(e.Atendido ? "Sí" : "No")</td>
                             <td>@e.Mensaje</td>

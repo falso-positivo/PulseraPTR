@@ -63,7 +63,9 @@ public class AlertaRepository : IAlertaRepository
             .Where(a => a.PacienteId == pacienteId
                         && a.FechaHora >= desde
                         && a.FechaHora <= hasta
-                        && (a.TipoAlerta == TipoAlerta.SosManual || a.TipoAlerta == TipoAlerta.SosAutomatico))
+                        && (a.TipoAlerta == TipoAlerta.SosManual
+                            || a.TipoAlerta == TipoAlerta.SosAutomatico
+                            || a.TipoAlerta == TipoAlerta.CaidaDetectada))
             .ToListAsync(cancellationToken);
     }
 

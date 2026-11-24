@@ -1,0 +1,14 @@
+﻿@model TipoEventoEmergencia
+@* Badge reutilizable para el tipo de evento de emergencia (SOS manual / Caída automática). *@
+@if (Model == TipoEventoEmergencia.CAIDA)
+{
+    <span class="badge bg-warning text-dark" title="Caída detectada automáticamente por el acelerómetro">
+        <i class="bi bi-person-falling"></i> Caída
+    </span>
+}
+else
+{
+    <span class="badge bg-danger" title="Botón SOS manual">
+        <i class="bi bi-telephone-fill"></i> SOS
+    </span>
+}

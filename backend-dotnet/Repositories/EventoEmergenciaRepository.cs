@@ -40,15 +40,15 @@ public class EventoEmergenciaRepository : IEventoEmergenciaRepository
 
     public async Task<int> ContarSosPendientesAsync(CancellationToken cancellationToken = default) =>
         await _db.EventosEmergencia.AsNoTracking()
-            .CountAsync(e => e.TipoEvento == TipoEventoEmergencia.SOS && !e.Atendido, cancellationToken);
+            .CountAsync(e => (e.TipoEvento == TipoEventoEmergencia.SOS || e.TipoEvento == TipoEventoEmergencia.CAIDA) && !e.Atendido, cancellationToken);
 
     public async Task<EventoEmergencia?> GetByIdAsync(int id, CancellationToken cancellationToken = default) =>
         await _db.EventosEmergencia.FirstOrDefaultAsync(e => e.Id == id, cancellationToken);
 
-    public async Task<IReadOnlyList<EventoEmergencia>> GetUltimosAsync(int cantidad, TipoEventoEmergencia tipoEvento, CancellationToken cancellationToken = default) =>
+    public async Task<IReadOnlyList<EventoEmergencia>> GetUltimosAsync(int cantidad, TipoEventoEmergencia? tipoEvento, CancellationToken cancellationToken = default) =>
         await _db.EventosEmergencia.AsNoTracking()
             .Include(e => e.Paciente)
-            .Where(e => e.TipoEvento == tipoEvento)
+            .Where(e => tipoEvento == null || e.TipoEvento == tipoEvento)
             .OrderByDescending(e => e.FechaHora)
             .Take(cantidad)
             .ToListAsync(cancellationToken);
@@ -67,7 +67,7 @@ public class EventoEmergenciaRepository : IEventoEmergenciaRepository
 
         return await _db.EventosEmergencia
             .Where(e => e.PacienteId == pacienteId
-                        && e.TipoEvento == TipoEventoEmergencia.SOS
+                        && (e.TipoEvento == TipoEventoEmergencia.SOS || e.TipoEvento == TipoEventoEmergencia.CAIDA)
                         && e.FechaHora >= desde
                         && e.FechaHora <= hasta)
             .OrderByDescending(e => e.FechaHora)

@@ -55,6 +55,24 @@ class PulseraRemoteRepository(
         }
     }
 
+    suspend fun enviarCaida(request: EventoSosRequest): SyncOutcome {
+        Log.d(TAG, "POST CAIDA pacienteId=${request.pacienteId}")
+        return execute("Caída") {
+            val response = api.postEventoCaida(request)
+            if (response.isSuccessful) {
+                SyncOutcome.Success(
+                    "[${BackendTime.nowIsoLocal()}] ✓ Caída enviada al servidor"
+                )
+            } else {
+                val err = response.errorBody()?.string().orEmpty().ifBlank { response.message() }
+                SyncOutcome.Failure(
+                    FailureKind.HTTP_ERROR,
+                    "[${BackendTime.nowIsoLocal()}] ✗ Caída rechazada HTTP ${response.code()}: $err"
+                )
+            }
+        }
+    }
+
     private inline fun execute(label: String, block: () -> SyncOutcome): SyncOutcome {
         return try {
             block()

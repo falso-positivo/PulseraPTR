@@ -12,7 +12,7 @@ internal static class SosAlertaSynchronizer
     private static readonly TimeSpan VentanaEmparejamiento = TimeSpan.FromSeconds(2);
 
     public static bool EsAlertaSos(TipoAlerta tipo) =>
-        tipo is TipoAlerta.SosManual or TipoAlerta.SosAutomatico;
+        tipo is TipoAlerta.SosManual or TipoAlerta.SosAutomatico or TipoAlerta.CaidaDetectada;
 
     public static async Task MarcarEventoSosAtendidoSiExisteAsync(
         IEventoEmergenciaRepository eventos,
@@ -37,7 +37,7 @@ internal static class SosAlertaSynchronizer
         EventoEmergencia evento,
         CancellationToken cancellationToken)
     {
-        if (evento.TipoEvento != TipoEventoEmergencia.SOS)
+        if (evento.TipoEvento is not (TipoEventoEmergencia.SOS or TipoEventoEmergencia.CAIDA))
             return;
 
         var lista = await alertas.GetSosPorPacienteYFechaAsync(

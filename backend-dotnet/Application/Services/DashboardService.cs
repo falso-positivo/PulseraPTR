@@ -68,7 +68,7 @@ public class DashboardService : IDashboardService
         }
 
         var ultimasAlertas = await _alertas.GetUltimasAsync(10, cancellationToken);
-        var ultimosSos = await _eventos.GetUltimosAsync(10, TipoEventoEmergencia.SOS, cancellationToken);
+        var ultimosSos = await _eventos.GetUltimosAsync(10, tipoEvento: null, cancellationToken);
 
         return new DashboardResumenDto
         {
